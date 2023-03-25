@@ -155,29 +155,33 @@ public class Person {
         return father;
     }
 
-    // nu print statement, maar moet returnen
-    public void getPetsGrandChildren() {
+    public List<Pet> getPetsGrandchildren() {
+        List<Pet> petsGrandchildren = new ArrayList<>();
         for (Person c : children){
             for (Person child : c.getChildren()){
                 for (Pet pet : child.getPets()){
                     System.out.println(child.getName() + " is a grandchild of " + this.name + " and has the following pets: ");
                     System.out.println(pet.getName());
+                    petsGrandchildren.add(pet);
                 }
 
             }
         }
+        return petsGrandchildren;
 
     }
 
-    // nu print statement, maar moet returnen
-    public void getNieces() {
+    public List<Person> getNieces() {
+        List<Person> nieces = new ArrayList<>();
         for (Person s : siblings){
             for (Person childSibling : s.getChildren()){
                 if (childSibling.getSex() == 'F' || childSibling.getSex() == 'f' || childSibling.getSex() == 'V' || childSibling.getSex() == 'v'){
                     System.out.println(childSibling.getName() + " is a niece of " + this.name);
+                    nieces.add(childSibling);
                 }
             }
         }
+        return nieces;
 
     }
 }
