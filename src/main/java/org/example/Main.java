@@ -12,6 +12,7 @@ public class Main {
 
         Person p3 = new Person ("Wessel", "van Nierop", 'M', 31);
         Person p4 = new Person ("Louie", "van Nierop", 'M', 3);
+        Person p5 = new Person ("Dani", "Garcia Anton", 'M', 40);
         Pet pet2 = new Pet("HondLouie", 6, "Golden Retriever");
         p.addParents(p1);
         p3.addChild(p4);
@@ -23,11 +24,14 @@ public class Main {
         p2.addParents(p);
 
         System.out.println(p2.getMother().getName());
-        p1.getPetsGrandChildren();
+        p1.getPetsGrandchildren();
 
         p.getChildren();
 
         p.getNieces();
+
+
+
 
 
     }

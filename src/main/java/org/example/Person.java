@@ -18,6 +18,7 @@ public class Person {
     private int age;
     private Person mother;
     private Person father;
+    private Person partner;
     private List<Person> siblings = new ArrayList<Person>();
     private List<Person> children = new ArrayList<Person>();
     private List<Pet> pets = new ArrayList<Pet>();
@@ -88,6 +89,7 @@ public class Person {
         return pets;
     }
 
+    //Ben er hier even vanuit gegaan dat je altijd een vader of moeder hebt. Dit kan uiteraard anders zijn, maar is even te ingwikkeld om te implementeren.
     public void addParents(Person p) {
         if (p.getSex() == 'F' || p.getSex() == 'f' || p.getSex() == 'V' || p.getSex() == 'v') {
             this.mother = p;
@@ -95,6 +97,38 @@ public class Person {
             this.father = p;
         }
         p.addChild(this);
+    }
+
+    public void addPartner(Person partner) {
+        // Ik ga even uit van een monogame relatie
+        if (this.getPartner() == null) {
+            this.partner = partner;
+            // Als je iemands partner betekent het niet direct dat je ook de vader/moeder van de kinderen van die persoon bent. Maar ik ben er hier even vanuit gegaan.
+            // add every child of p1 to partner as child (and this partner as father or mother)
+            // niet meer dan 1 partner?
+            for (Person child : children) {
+                partner.addChild(child);
+            }
+            partner.addPartner(this);
+        }
+    }
+
+    public Person getPartner() {
+        return partner;
+    }
+
+    // zijn deze setters nodig?
+
+    public void setMother(Person mother) {
+        this.mother = mother;
+    }
+
+    public void setFather(Person father) {
+        this.father = father;
+    }
+
+    public void setPartner(Person partner) {
+        this.partner = partner;
     }
 
     public void setPets(List<Pet> pets) {
@@ -131,10 +165,9 @@ public class Person {
 
     // check hoe goed op te lossen bij 'verkeerde' invoer
     public void setSex(char sex) {
-        if (this.sex != 'F' || this.sex != 'M'){
+        if (this.sex != 'F' || this.sex != 'M') {
             this.sex = 'X';
-        }
-        else {
+        } else {
             this.sex = sex;
         }
     }
@@ -157,9 +190,9 @@ public class Person {
 
     public List<Pet> getPetsGrandchildren() {
         List<Pet> petsGrandchildren = new ArrayList<>();
-        for (Person c : children){
-            for (Person child : c.getChildren()){
-                for (Pet pet : child.getPets()){
+        for (Person c : children) {
+            for (Person child : c.getChildren()) {
+                for (Pet pet : child.getPets()) {
                     System.out.println(child.getName() + " is a grandchild of " + this.name + " and has the following pets: ");
                     System.out.println(pet.getName());
                     petsGrandchildren.add(pet);
@@ -173,9 +206,9 @@ public class Person {
 
     public List<Person> getNieces() {
         List<Person> nieces = new ArrayList<>();
-        for (Person s : siblings){
-            for (Person childSibling : s.getChildren()){
-                if (childSibling.getSex() == 'F' || childSibling.getSex() == 'f' || childSibling.getSex() == 'V' || childSibling.getSex() == 'v'){
+        for (Person s : siblings) {
+            for (Person childSibling : s.getChildren()) {
+                if (childSibling.getSex() == 'F' || childSibling.getSex() == 'f' || childSibling.getSex() == 'V' || childSibling.getSex() == 'v') {
                     System.out.println(childSibling.getName() + " is a niece of " + this.name);
                     nieces.add(childSibling);
                 }
