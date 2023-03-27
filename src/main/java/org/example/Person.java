@@ -60,13 +60,97 @@ public class Person {
     public void addChild(Person child) {
         if (hasUniqueName(child, children)) {
             children.add(child);
-            child.addParents(this);
+            child.addParent(this, child);
         }
     }
 
     public void addPet(Pet pet) {
         pets.add(pet);
         pet.setOwner(this);
+    }
+
+    //Ben er hier even vanuit gegaan dat je altijd 1 vader en/of moeder hebt. Dit kan uiteraard meer zijn, maar is even te ingwikkeld om te implementeren.
+    public void addParent(Person parent, Person child) {
+        if (parent.getSex() == 'F' || parent.getSex() == 'f' || parent.getSex() == 'V' || parent.getSex() == 'v') {
+            if (child.getMother() == null) {
+                child.setMother(parent);
+            }
+        } else {
+            if (child.getFather() == null) {
+                child.setFather(parent);
+            }
+        }
+        parent.addChild(child);
+    }
+
+    public void addParents(Person father, Person mother, Person child) {
+        if (child.getMother() == null) {
+            child.setMother(mother);
+            mother.addChild(child);
+        }
+        if (child.getFather() == null) {
+            child.setFather(father);
+            father.addChild(child);
+        }
+    }
+
+    public void addPartner(Person partner) {
+        // Ik ga even uit van een monogame relatie - dus iemand kan maar 1 partner hebben.
+        if (this.getPartner() == null) {
+            this.setPartner(partner);
+            // Als je iemands partner bent, hoeft dat niet te betekenen dat je ook de vader/moeder van de kinderen van die persoon bent.
+            // Maar ik ben er hier even vanuit gegaan dat dat altijd wel zo is.
+            // add every child of p1 to partner as child (and this partner as father or mother)
+            for (Person child : children) {
+                partner.addChild(child);
+            }
+            partner.addPartner(this);
+        }
+    }
+
+    public void breakUp(Person partner) {
+        if (this.getPartner() != null) {
+            this.setPartner(null);
+            partner.breakUp(this);
+        }
+    }
+
+
+    public List<Pet> getPetsGrandchildren() {
+        List<Pet> petsGrandchildren = new ArrayList<>();
+        for (Person c : children) {
+            for (Person child : c.getChildren()) {
+                for (Pet pet : child.getPets()) {
+                    petsGrandchildren.add(pet);
+                }
+            }
+        }
+        return petsGrandchildren;
+
+    }
+
+    public List<Person> getGrandchildren() {
+        List<Person> grandchildren = new ArrayList<>();
+        for (Person c : children) {
+            for (Person child : c.getChildren()) {
+                grandchildren.add(child);
+            }
+        }
+        return grandchildren;
+    }
+
+
+    public List<Person> getNieces() {
+        List<Person> nieces = new ArrayList<>();
+        for (Person s : siblings) {
+            for (Person childSibling : s.getChildren()) {
+                if (childSibling.getSex() == 'F' || childSibling.getSex() == 'f' || childSibling.getSex() == 'V' || childSibling.getSex() == 'v') {
+                    nieces.add(childSibling);
+                }
+            }
+        }
+        return nieces;
+
     }
 
     public List<Person> getSiblings() {
@@ -89,35 +173,9 @@ public class Person {
         return pets;
     }
 
-    //Ben er hier even vanuit gegaan dat je altijd een vader of moeder hebt. Dit kan uiteraard anders zijn, maar is even te ingwikkeld om te implementeren.
-    public void addParents(Person p) {
-        if (p.getSex() == 'F' || p.getSex() == 'f' || p.getSex() == 'V' || p.getSex() == 'v') {
-            this.mother = p;
-        } else {
-            this.father = p;
-        }
-        p.addChild(this);
-    }
-
-    public void addPartner(Person partner) {
-        // Ik ga even uit van een monogame relatie
-        if (this.getPartner() == null) {
-            this.partner = partner;
-            // Als je iemands partner betekent het niet direct dat je ook de vader/moeder van de kinderen van die persoon bent. Maar ik ben er hier even vanuit gegaan.
-            // add every child of p1 to partner as child (and this partner as father or mother)
-            // niet meer dan 1 partner?
-            for (Person child : children) {
-                partner.addChild(child);
-            }
-            partner.addPartner(this);
-        }
-    }
-
     public Person getPartner() {
         return partner;
     }
-
-    // zijn deze setters nodig?
 
     public void setMother(Person mother) {
         this.mother = mother;
@@ -163,10 +221,10 @@ public class Person {
         return sex;
     }
 
-    // check hoe goed op te lossen bij 'verkeerde' invoer
+    // even uitgegaan van of male of female. X niet meegenomen in geslacht opties.
     public void setSex(char sex) {
-        if (this.sex != 'F' || this.sex != 'M') {
-            this.sex = 'X';
+        if (this.sex != 'F' || this.sex != 'f' || this.sex != 'V' || this.sex != 'v') {
+            this.sex = 'M';
         } else {
             this.sex = sex;
         }
@@ -188,35 +246,6 @@ public class Person {
         return father;
     }
 
-    public List<Pet> getPetsGrandchildren() {
-        List<Pet> petsGrandchildren = new ArrayList<>();
-        for (Person c : children) {
-            for (Person child : c.getChildren()) {
-                for (Pet pet : child.getPets()) {
-                    System.out.println(child.getName() + " is a grandchild of " + this.name + " and has the following pets: ");
-                    System.out.println(pet.getName());
-                    petsGrandchildren.add(pet);
-                }
-
-            }
-        }
-        return petsGrandchildren;
-
-    }
-
-    public List<Person> getNieces() {
-        List<Person> nieces = new ArrayList<>();
-        for (Person s : siblings) {
-            for (Person childSibling : s.getChildren()) {
-                if (childSibling.getSex() == 'F' || childSibling.getSex() == 'f' || childSibling.getSex() == 'V' || childSibling.getSex() == 'v') {
-                    System.out.println(childSibling.getName() + " is a niece of " + this.name);
-                    nieces.add(childSibling);
-                }
-            }
-        }
-        return nieces;
-
-    }
 }
 
 
