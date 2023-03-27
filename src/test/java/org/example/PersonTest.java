@@ -556,17 +556,25 @@ class PersonTest {
 
         //arrange
         Person brother = new Person("Broer1", "Janssen", 'M', 30);
-        Person niece1 = new Person("Kind1", "Janssen", 'F', 10);
-        Person nephew1 = new Person("Kind2", "Janssen", 'm', 8);
-        Person niece2 = new Person("Kind3", "Janssen", 'f', 6);
+        Person sister = new Person("Zus1", "Janssen", 'F', 25);
+        Person niece1 = new Person("Kind1Broer", "Janssen", 'F', 10);
+        Person nephew1 = new Person("Kind2Broer", "Janssen", 'm', 8);
+        Person niece2 = new Person("Kind3Broer", "Janssen", 'f', 6);
+        Person niece3 = new Person("Kind1Zus", "Janssen", 'f', 5);
+        Person nephew2 = new Person("Kind2Zus", "Janssen", 'm', 3);
+        Person niece4 = new Person("Kind3Zus", "Janssen", 'f', 1);
 
-        List<Person> nieces = Arrays.asList(niece1, niece2);
+        List<Person> nieces = Arrays.asList(niece1, niece2, niece3, niece4);
 
         //act
         p.addSibling(brother);
+        p.addSibling(sister);
         brother.addChild(niece1);
         brother.addChild(nephew1);
         brother.addChild(niece2);
+        sister.addChild(niece3);
+        sister.addChild(nephew2);
+        sister.addChild(niece4);
 
 
         List<Person> outputNieces = p.getNieces();
